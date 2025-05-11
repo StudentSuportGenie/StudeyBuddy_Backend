@@ -36,9 +36,11 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             List<String> userEmail = tokenDecodeServices.getEmail(token);
             String role = tokenDecodeServices.getJobTitle(token);
-            String country = tokenDecodeServices.getCountry(token); // You might use this elsewhere
 
-            // Set authentication context
+            if (role == null || role.isEmpty()) {
+                throw new RuntimeException("Missing role in token (jobTitle claim)");
+            }
+
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             userEmail,
@@ -49,7 +51,7 @@ public class TokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: invalid token");
+            response.getWriter().write("Unauthorized: invalid token - " + e.getMessage());
             return;
         }
 
@@ -60,7 +62,7 @@ public class TokenFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7); // Strip "Bearer " prefix
+            return authHeader.substring(7);
         }
         return null;
     }

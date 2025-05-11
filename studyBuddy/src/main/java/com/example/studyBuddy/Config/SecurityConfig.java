@@ -26,23 +26,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-         http
-             .csrf(AbstractHttpConfigurer::disable)
-             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-             .authorizeHttpRequests(authz -> authz
-                    .requestMatchers("/public/**").permitAll()
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/API/V1/**").hasRole("STUDENT") // Use uppercase to match token
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS Preflight Requests
-                     .anyRequest().authenticated()
-             )
-             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-             .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
-            .oauth2ResourceServer(oauth2 -> oauth2
-                    .jwt()
-            );
-
-    return http.build();
-  }
+        return http.build();
+    }
 
     @Bean
     public CorsFilter corsFilter() {
@@ -61,5 +58,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }
