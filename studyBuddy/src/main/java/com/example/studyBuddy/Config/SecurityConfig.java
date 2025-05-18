@@ -31,7 +31,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/API/V1/**").hasRole("STUDENT") // Use uppercase to match token
+                        .requestMatchers("/API/V1/**").hasRole("STUDENT")
+                        .requestMatchers("/API/V1/**").hasRole("STUDENT")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )

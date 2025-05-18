@@ -15,5 +15,5 @@ public class ScheduleofTimeDTO {
     private Date scheduleDate;
     private Time scheduleStartTime;
     private int hourCount;
-    private int StudentID;
+    private int studentDetailsId;
 }

@@ -33,7 +33,7 @@ public class StudentdetailsController {
 
     }
 
-    @GetMapping("/studentDetailUni")
+    @GetMapping("studentDetailUni")
     public ResponseEntity<?> getStudentDetailUni(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "").trim(); // Ensure it's clean
 
@@ -45,6 +45,41 @@ public class StudentdetailsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token: " + e.getMessage());
         }
     }
+
+    @PutMapping("updateDetails")
+    public ResponseEntity<?> updateStudentDetails(@RequestBody studentdetailsDTO studentdetailsDTO,@RequestHeader("Authorization") String authHeader) {
+       String token = authHeader.replace("Bearer ", "").trim();
+       try{
+           List<String> email = tokenDecodeServices.getEmail(token);
+           studentdetailsDTO updatestudent = studentDetailsServices.updatestudentdetails(studentdetailsDTO,email.get(0));
+           return ResponseEntity.ok().body(updatestudent);
+       } catch (Exception e) {
+           return ResponseEntity.status(500).body(e.getMessage());
+       }
+    }
+
+    @DeleteMapping("deletestudent")
+    public ResponseEntity<?> deleteStudent(@RequestParam int studentId) {
+
+        try{
+           String studentEmail = studentDetailsServices.deletestudentdetails(studentId);
+           return ResponseEntity.ok().body(studentEmail+"account Delete Successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("Allstudent")
+    public ResponseEntity<?> getAllStudent() {
+        try{
+            List<studentdetailsDTO> getallDetail = studentDetailsServices.getallstudentdetails();
+            return ResponseEntity.ok(getallDetail);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+
+    }
+
 
 }
 
