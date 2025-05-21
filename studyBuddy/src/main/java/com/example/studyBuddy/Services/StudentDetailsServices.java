@@ -3,8 +3,11 @@ package com.example.studyBuddy.Services;
 import com.example.studyBuddy.DTO.studentdetailsDTO;
 import com.example.studyBuddy.Emailhandel.EmailDTO;
 import com.example.studyBuddy.Emailhandel.EmailServices;
+import com.example.studyBuddy.Models.ScheduleOfTime;
 import com.example.studyBuddy.Models.StudentDetails;
+import com.example.studyBuddy.Repo.DataReminderRepo;
 import com.example.studyBuddy.Repo.StudentDetailsRepo;
+import com.example.studyBuddy.Repo.StudentTimescheduleRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,12 @@ public class StudentDetailsServices {
 
     @Autowired
     private StudentDetailsRepo studentDetailsRepo;
+
+    @Autowired
+    private StudentTimescheduleRepo studentTimescheduleRepo;
+
+    @Autowired
+    private DataReminderRepo dataReminderRepo;
 
     public studentdetailsDTO AddStudentDetails(studentdetailsDTO studentdetailsDTO) {
 
@@ -86,6 +95,8 @@ public class StudentDetailsServices {
 
      emailServices.sendEmail(emailDTO);
 
+     studentTimescheduleRepo.deleteById(studentId);
+     dataReminderRepo.deleteById(studentId);
      studentDetailsRepo.delete(studentDetails);
      return studentDetails.getStudentEmail();
     }

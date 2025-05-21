@@ -4,9 +4,7 @@ import com.example.studyBuddy.Config.CustomFilter.TokenDecodeServices;
 import com.example.studyBuddy.DTO.ScheduleofTimeDTO;
 import com.example.studyBuddy.Services.TimeScheduleServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +27,30 @@ public class TimeScheduleControler {
           List<String> studentEmail = tokenDecodeServices.getEmail(token);
            String ScheduleofTimeDTO = timeScheduleServices.AddTimeSchedule(schedule,studentEmail.get(0));
            return ResponseEntity.ok(ScheduleofTimeDTO);
+       } catch (Exception e) {
+           return ResponseEntity.status(500).body(e.getMessage());
+       }
+   }
+
+   @GetMapping("getalldetails")
+    public ResponseEntity<?> getAlldetails(@RequestHeader("Authorization") String authHeader) {
+       String token = authHeader.replace("Bearer ", "").trim();
+       try{
+           List<String> studentEmail = tokenDecodeServices.getEmail(token);
+           List<ScheduleofTimeDTO> getallSchedule = timeScheduleServices.GetTimeSchedule(studentEmail.get(0));
+           return ResponseEntity.ok(getallSchedule);
+       }catch (Exception e) {
+           return ResponseEntity.status(500).body(e.getMessage());
+       }
+   }
+
+   @DeleteMapping("deleteDetails")
+    public ResponseEntity<?> deleteDetails(@RequestHeader("Authorization") String authHeader, @RequestBody Integer scheduleId) {
+       String token = authHeader.replace("Bearer ", "").trim();
+       try{
+           List<String> studentEmail = tokenDecodeServices.getEmail(token);
+           ScheduleofTimeDTO detete_Details = timeScheduleServices.deleteTimeSchedule(studentEmail.get(0), scheduleId);
+           return ResponseEntity.ok(detete_Details);
        } catch (Exception e) {
            return ResponseEntity.status(500).body(e.getMessage());
        }
