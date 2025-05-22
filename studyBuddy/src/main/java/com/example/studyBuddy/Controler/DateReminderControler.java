@@ -62,4 +62,18 @@ public class DateReminderControler {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
+    @GetMapping("AllDatareminders")
+    public ResponseEntity<?> getAllDateReminders(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "").trim();
+        try{
+            String role = tokenDecodeServices.getJobTitle(token);
+            if(role.equals("Admin")) {
+                return ResponseEntity.ok().body(dateReminderService.getAllDateReminders());
+            }
+            return null;
+        }catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
 }

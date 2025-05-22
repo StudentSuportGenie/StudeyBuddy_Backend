@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,5 +58,11 @@ public class DateReminderService {
             return modelMapper.map(updateReminder, DateReminderDTO.class);
         }
         return null;
+    }
+
+    public List<DateReminderDTO> getAllDateReminders() {
+        List<DateReminder> dateReminders = dataReminderRepo.findAll();
+        List<DateReminderDTO> dateReminderDTOs = new ArrayList<>();
+        return dateReminderDTOs;
     }
 }
