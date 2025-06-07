@@ -30,7 +30,7 @@ public class DateReminderControler {
     }
 
     @GetMapping("getReminder")
-    public ResponseEntity<?> getDateReminders(@RequestBody Integer dateReminderId, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> getDateReminders(@RequestParam Integer dateReminderId, @RequestHeader("Authorization") String authHeader) {
          String token = authHeader.replace("Bearer ", "").trim();
         try{
             List<String> userEmail = tokenDecodeServices.getEmail(token);
@@ -42,7 +42,7 @@ public class DateReminderControler {
     }
 
     @DeleteMapping("deleteReminder")
-    public ResponseEntity<?> deleteDateReminder(@RequestHeader("Authorization") String authHeader,@RequestBody Integer dateReminderId) {
+    public ResponseEntity<?> deleteDateReminder(@RequestHeader("Authorization") String authHeader,@RequestParam Integer dateReminderId) {
         String token = authHeader.replace("Bearer ", "").trim();
         try{
             List<String> userEmail = tokenDecodeServices.getEmail(token);

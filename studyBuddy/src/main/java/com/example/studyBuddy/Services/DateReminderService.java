@@ -7,9 +7,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class DateReminderService {
@@ -21,19 +26,50 @@ public class DateReminderService {
     private DataReminderRepo dataReminderRepo;
 
     public DateReminderDTO AddDateReminder(DateReminderDTO dateReminderDTO) {
-       DateReminder finddatereminder = dataReminderRepo.findByStudentDetails(dateReminderDTO.getStudentDetailsId()).orElse(null);
+        int studentDetailsId = dateReminderDTO.getStudentDetailsId();
+        Date inputDate = dateReminderDTO.getReminderDate();
+        Time inputTime = dateReminderDTO.getReminderTime();
 
-       if(finddatereminder.getReminderDate() == dateReminderDTO.getReminderDate() && finddatereminder.getReminderTime() == dateReminderDTO.getReminderTime() && finddatereminder.getStudentDetails ().getStudentDetailsId() ==  dateReminderDTO.getStudentDetailsId()){
-           throw new IllegalStateException("Reminder already exists");
-       }
-       DateReminder newReminder = modelMapper.map(dateReminderDTO, DateReminder.class);
-       dataReminderRepo.save(newReminder);
-       return modelMapper.map(finddatereminder, DateReminderDTO.class);
+        // Convert input date and time to LocalDate and LocalTime
+        LocalDate inputLocalDate = inputDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        LocalTime inputLocalTime = inputTime.toLocalTime().withNano(0); // Normalize time
+
+        // Fetch existing reminders for the student
+        List<DateReminder> existingReminders = dataReminderRepo.findByStudentDetails_StudentDetailsId(studentDetailsId);
+
+        // Check for duplicate reminder (same date and time)
+        boolean duplicateExists = existingReminders.stream()
+                .anyMatch(reminder -> {
+                    if (reminder.getReminderDate() == null || reminder.getReminderTime() == null) return false;
+
+                    LocalDate existingDate = reminder.getReminderDate().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+                    LocalTime existingTime = reminder.getReminderTime().toLocalTime().withNano(0); // Normalize time
+
+                    return existingDate.equals(inputLocalDate) && existingTime.equals(inputLocalTime);
+                });
+
+        if (duplicateExists) {
+            throw new IllegalStateException("Reminder already exists for this date and time.");
+        }
+
+        // Map DTO to entity and save new reminder
+        DateReminder newReminder = modelMapper.map(dateReminderDTO, DateReminder.class);
+        DateReminder savedReminder = dataReminderRepo.save(newReminder);
+
+        // Map saved entity back to DTO and return
+        return modelMapper.map(savedReminder, DateReminderDTO.class);
     }
+
+
 
     public DateReminderDTO GetDateReminder(String email, Integer dateReminderId) {
         DateReminder findReminder = dataReminderRepo.findById(dateReminderId).orElse(null);
 
+        assert findReminder != null;
         if(email.equals(findReminder.getStudentDetails().getStudentEmail())){
             return modelMapper.map(findReminder, DateReminderDTO.class);
         }

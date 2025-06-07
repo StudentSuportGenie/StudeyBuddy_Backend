@@ -46,7 +46,7 @@ public class KnowledgeItemController {
     }
 
     @DeleteMapping("deleteItems")
-    public ResponseEntity<?> deleteKnowledgeItems(@RequestHeader("Authorization") String authHeader, @RequestBody Integer knowledgeItemID) {
+    public ResponseEntity<?> deleteKnowledgeItems(@RequestHeader("Authorization") String authHeader, @RequestParam Integer knowledgeItemID) {
         String token = authHeader.replace("Bearer ", "").trim();
         try{
             String Role = tokenDecodeServices.getJobTitle(token);
