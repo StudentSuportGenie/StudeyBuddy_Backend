@@ -3,6 +3,7 @@ package com.example.studyBuddy.Services;
 import com.example.studyBuddy.DTO.studentdetailsDTO;
 import com.example.studyBuddy.Emailhandel.EmailDTO;
 import com.example.studyBuddy.Emailhandel.EmailServices;
+import com.example.studyBuddy.Models.DateReminder;
 import com.example.studyBuddy.Models.ScheduleOfTime;
 import com.example.studyBuddy.Models.StudentDetails;
 import com.example.studyBuddy.Repo.DataReminderRepo;
@@ -84,7 +85,6 @@ public class StudentDetailsServices {
 
     public String deletestudentdetails(int studentId) {
      StudentDetails studentDetails = studentDetailsRepo.findById(studentId).orElse(null);
-
      if (studentDetails == null) {
          throw new IllegalStateException("Student with this id does not exist: " + studentId);
      }
