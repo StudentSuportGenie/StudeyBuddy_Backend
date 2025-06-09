@@ -35,7 +35,6 @@ public class SecurityConfig {
                         .requestMatchers("/API/V1/RadScheduler","/API/V1/getalldetails","/API/V1/deleteDetails","/API/V1/UpdateDetails").hasRole("STUDENT")
                         .requestMatchers("/API/V1/deletestudent","/API/V1/Allstudent").hasRole("ADMIN")
                         .requestMatchers("/API/V1/**").hasRole("STUDENT")
-                        .requestMatchers("/API/V1/**").hasRole("STUDENT")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
