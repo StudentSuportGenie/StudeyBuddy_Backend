@@ -20,7 +20,7 @@ public class TimeScheduleControler {
    @Autowired
    private TokenDecodeServices tokenDecodeServices;
 
-   @PostMapping("Addtimeschedule")
+   @PostMapping("RadScheduler")
     public ResponseEntity<?> addTimeSchedule(@RequestHeader("Authorization") String authHeader, @RequestBody ScheduleofTimeDTO schedule) {
         String token = authHeader.replace("Bearer ", "").trim();
        try{
@@ -44,8 +44,20 @@ public class TimeScheduleControler {
        }
    }
 
+   @PutMapping("UpdateDetails")
+   public ResponseEntity<?> updateTimeSchedule(@RequestHeader("Authorization") String authHeader, @RequestBody ScheduleofTimeDTO schedule) {
+       String token = authHeader.replace("Bearer ", "").trim();
+       try{
+           List<String> studentEmail = tokenDecodeServices.getEmail(token);
+           ScheduleofTimeDTO updateSchedule = timeScheduleServices.updateTimeSchedule(schedule,studentEmail.get(0));
+           return ResponseEntity.ok(updateSchedule);
+       } catch (Exception e) {
+           return ResponseEntity.status(500).body(e.getMessage());
+       }
+   }
+
    @DeleteMapping("deleteDetails")
-    public ResponseEntity<?> deleteDetails(@RequestHeader("Authorization") String authHeader, @RequestBody Integer scheduleId) {
+    public ResponseEntity<?> deleteDetails(@RequestHeader("Authorization") String authHeader, @RequestParam Integer scheduleId) {
        String token = authHeader.replace("Bearer ", "").trim();
        try{
            List<String> studentEmail = tokenDecodeServices.getEmail(token);

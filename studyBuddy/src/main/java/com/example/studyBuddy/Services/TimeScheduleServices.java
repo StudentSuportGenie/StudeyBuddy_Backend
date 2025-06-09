@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ public class TimeScheduleServices {
     private StudentDetailsRepo studentDetailsRepo;
 
     public String AddTimeSchedule(ScheduleofTimeDTO schedule,String Email) {
+
         StudentDetails findstudent = studentDetailsRepo.findByStudentEmail(Email).orElse(null);
         assert findstudent != null;
         if(findstudent.getStudentDetailsId() != schedule.getStudentDetailsId()){
@@ -35,6 +38,44 @@ public class TimeScheduleServices {
         if(findstudent.getScheduleOfTime() ==  schedule.getScheduleStartTime() && findstudent.getStudentEmail().equals(Email)){
             throw new IllegalStateException("Schedule of time already exists");
         }
+
+        // chaek the added schedule inside
+
+//        LocalTime newStartTime = schedule.getScheduleStartTime().toLocalTime(); // e.g. 22:00
+//        LocalTime newEndTime = newStartTime.plusMinutes(schedule.getHourCount()); // e.g. 01:00 (next day)
+//
+//       // Handle overnight case (if end time is before start time)
+//        if (newEndTime.isBefore(newStartTime)) {
+//            newEndTime = newEndTime.plusHours(24); // normalize to next day
+//        }
+//
+//        List<ScheduleOfTime> previousSchedules = studentTimescheduleRepo.findByStudentDetails(findstudent);
+//
+//        for (ScheduleOfTime existingSchedule : previousSchedules) {
+//            LocalTime existingStart = existingSchedule.getScheduleStartTime().toLocalTime();
+//            LocalTime existingEnd = existingStart.plusMinutes(existingSchedule.getHourCount());
+//
+//            // Handle overnight case
+//            if (existingEnd.isBefore(existingStart)) {
+//                existingEnd = existingEnd.plusHours(24);
+//            }
+//
+//            // Normalize comparison times to 24-hour span
+//            LocalTime compareNewStart = newStartTime;
+//            LocalTime compareNewEnd = newEndTime;
+//            if (newEndTime.isBefore(newStartTime)) {
+//                compareNewEnd = compareNewEnd.plusHours(24);
+//            }
+//
+//            // Check if times overlap
+//            boolean isOverlapping = !(compareNewEnd.isBefore(existingStart) || compareNewStart.isAfter(existingEnd));
+//
+//            if (isOverlapping) {
+//                throw new RuntimeException("Schedule time overlaps with an existing schedule from "
+//                        + existingStart + " to " + existingEnd);
+//            }
+//        }
+
         ScheduleOfTime scheduleOfTime = modelMapper.map(schedule, ScheduleOfTime.class);
         studentTimescheduleRepo.save(scheduleOfTime);
         return "Success Fully Saved Your Schedule";
@@ -50,12 +91,36 @@ public class TimeScheduleServices {
         // Map to DTOs
         return schedules.stream()
                 .map(schedule -> new ScheduleofTimeDTO(
+                        schedule.getScheduleId(),
                         schedule.getScheduleDate(),
                         schedule.getScheduleStartTime(),
                         schedule.getHourCount(),
+                        schedule.getScheduleTopic(),
                         schedule.getStudentDetails().getStudentDetailsId()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public ScheduleofTimeDTO updateTimeSchedule(ScheduleofTimeDTO schedule, String Email) {
+        StudentDetails student = studentDetailsRepo.findByStudentEmail(Email).orElse(null);
+
+        if(student == null){
+            throw new IllegalStateException("Student details not found");
+        }
+
+        ScheduleOfTime findSchedule = studentTimescheduleRepo.findById(schedule.getScheduleId()).orElse(null);
+        if(findSchedule == null){
+            throw new IllegalStateException("Schedule not found");
+        }
+        findSchedule.setScheduleId(schedule.getScheduleId());
+        findSchedule.setScheduleDate(schedule.getScheduleDate());
+        findSchedule.setScheduleStartTime(schedule.getScheduleStartTime());
+        findSchedule.setHourCount(schedule.getHourCount());
+        findSchedule.setStudentDetails(student);
+
+        studentTimescheduleRepo.save(findSchedule);
+        return modelMapper.map(findSchedule, ScheduleofTimeDTO.class);
+
     }
 
     public ScheduleofTimeDTO deleteTimeSchedule(String email,Integer scheduleId) {

@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/API/V1/Addstudetails","/API/V1/studentDetailUni","/API/V1/updateDetails").hasRole("STUDENT")
+                        .requestMatchers("/API/V1/RadScheduler","/API/V1/getalldetails","/API/V1/deleteDetails","/API/V1/UpdateDetails").hasRole("STUDENT")
                         .requestMatchers("/API/V1/deletestudent","/API/V1/Allstudent").hasRole("ADMIN")
                         .requestMatchers("/API/V1/**").hasRole("STUDENT")
                         .requestMatchers("/API/V1/**").hasRole("STUDENT")

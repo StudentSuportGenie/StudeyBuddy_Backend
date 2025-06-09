@@ -21,6 +21,7 @@ public class ScheduleOfTime {
     private Date scheduleDate;
     private Time scheduleStartTime;
     private int hourCount;
+    private String scheduleTopic;
 
     @ManyToOne
     @JoinColumn(name = "studentDetails_Id", referencedColumnName = "studentDetailsId", nullable = false)

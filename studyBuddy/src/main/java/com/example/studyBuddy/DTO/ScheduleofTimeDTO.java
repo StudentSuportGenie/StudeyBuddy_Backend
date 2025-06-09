@@ -12,8 +12,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class ScheduleofTimeDTO {
 
+    private Integer scheduleId;
     private Date scheduleDate;
     private Time scheduleStartTime;
     private int hourCount;
+    private String scheduleTopic;
     private int studentDetailsId;
 }
