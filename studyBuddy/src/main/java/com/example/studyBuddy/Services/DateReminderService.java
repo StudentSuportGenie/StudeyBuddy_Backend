@@ -2,11 +2,15 @@ package com.example.studyBuddy.Services;
 
 import com.example.studyBuddy.DTO.DateReminderDTO;
 import com.example.studyBuddy.Models.DateReminder;
+import com.example.studyBuddy.Models.StudentDetails;
 import com.example.studyBuddy.Repo.DataReminderRepo;
+import com.example.studyBuddy.Repo.StudentDetailsRepo;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +28,9 @@ public class DateReminderService {
 
     @Autowired
     private DataReminderRepo dataReminderRepo;
+
+    @Autowired
+    private StudentDetailsRepo studentDetailsRepo;
 
     public DateReminderDTO AddDateReminder(DateReminderDTO dateReminderDTO) {
         int studentDetailsId = dateReminderDTO.getStudentDetailsId();
@@ -66,14 +73,20 @@ public class DateReminderService {
 
 
 
-    public DateReminderDTO GetDateReminder(String email, Integer dateReminderId) {
-        DateReminder findReminder = dataReminderRepo.findById(dateReminderId).orElse(null);
+    public List<DateReminderDTO> GetDateReminder(String email) {
+         StudentDetails findStudentID = studentDetailsRepo.findByStudentEmail(email).orElse(null);
 
-        assert findReminder != null;
-        if(email.equals(findReminder.getStudentDetails().getStudentEmail())){
-            return modelMapper.map(findReminder, DateReminderDTO.class);
-        }
-         return null;
+         if (findStudentID == null) {
+             throw new IllegalStateException("Student doesn't exist.");
+         }
+
+        List<DateReminder> find_unique_details = dataReminderRepo.findByStudentDetails_StudentDetailsId(findStudentID.getStudentDetailsId());
+
+         if (find_unique_details.isEmpty()) {
+             throw new IllegalStateException("Date reminder doesn't exist.");
+         }
+        Type listType = new TypeToken<List<DateReminderDTO>>() {}.getType();
+        return modelMapper.map(find_unique_details, listType);
     }
 
     public DateReminderDTO deleteDateReminder(String email, Integer dateReminderId) {

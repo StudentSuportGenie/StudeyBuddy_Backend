@@ -16,7 +16,7 @@ public class DateReminder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int dateReminderId;
-
+    private String reminderTopic;
     private Date reminderDate;
     private Time reminderTime = Time.valueOf("23:59:59");
 

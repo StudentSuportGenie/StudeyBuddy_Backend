@@ -15,6 +15,7 @@ public class DateReminderDTO {
 
     private int dateReminderId;
     private Date reminderDate;
+    private String reminderTopic;
     private Time reminderTime = Time.valueOf("23:59:59");
     private int studentDetailsId;
 }
