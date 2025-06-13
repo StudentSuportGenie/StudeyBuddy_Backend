@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/API/V1/")
@@ -28,6 +30,8 @@ public class StudentdetailsController {
             return ResponseEntity.ok().body(studentdetailsDTO);
 
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
 
@@ -42,7 +46,9 @@ public class StudentdetailsController {
             studentdetailsDTO getstudentdetails = studentDetailsServices.getstudentdetails(emails.get(0));
             return ResponseEntity.ok(getstudentdetails);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 
@@ -54,6 +60,8 @@ public class StudentdetailsController {
            studentdetailsDTO updatestudent = studentDetailsServices.updatestudentdetails(studentdetailsDTO,email.get(0));
            return ResponseEntity.ok().body(updatestudent);
        } catch (Exception e) {
+           Map<String, String> errorResponse = new HashMap<>();
+           errorResponse.put("message", e.getMessage());
            return ResponseEntity.status(500).body(e.getMessage());
        }
     }
@@ -65,6 +73,8 @@ public class StudentdetailsController {
            String studentEmail = studentDetailsServices.deletestudentdetails(studentId);
            return ResponseEntity.ok().body(studentEmail+"account Delete Successfully");
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -75,6 +85,8 @@ public class StudentdetailsController {
             List<studentdetailsDTO> getallDetail = studentDetailsServices.getallstudentdetails();
             return ResponseEntity.ok(getallDetail);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
 

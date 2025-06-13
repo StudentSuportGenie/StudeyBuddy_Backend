@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/API/V1/")
@@ -25,6 +27,8 @@ public class DateReminderControler {
             DateReminderDTO addeddate = dateReminderService.AddDateReminder(dateReminderDTO);
             return ResponseEntity.ok().body(addeddate);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -37,6 +41,8 @@ public class DateReminderControler {
             List < DateReminderDTO> getdatareminder = dateReminderService.GetDateReminder(userEmail.get(0));
             return ResponseEntity.ok().body(getdatareminder);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -49,6 +55,8 @@ public class DateReminderControler {
             DateReminderDTO DeleteReminder = dateReminderService.deleteDateReminder(userEmail.get(0), dateReminderId);
             return ResponseEntity.ok().body(DeleteReminder);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -59,6 +67,8 @@ public class DateReminderControler {
             DateReminderDTO updateReminder = dateReminderService.updateDateReminder(dateReminderDTO);
             return ResponseEntity.ok().body(updateReminder);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -73,6 +83,8 @@ public class DateReminderControler {
             }
             return null;
         }catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }

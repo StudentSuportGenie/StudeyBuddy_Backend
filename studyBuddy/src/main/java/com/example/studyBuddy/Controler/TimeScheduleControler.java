@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -25,10 +27,12 @@ public class TimeScheduleControler {
         String token = authHeader.replace("Bearer ", "").trim();
        try{
           List<String> studentEmail = tokenDecodeServices.getEmail(token);
-           String ScheduleofTimeDTO = timeScheduleServices.AddTimeSchedule(schedule,studentEmail.get(0));
+           ScheduleofTimeDTO ScheduleofTimeDTO = timeScheduleServices.AddTimeSchedule(schedule,studentEmail.get(0));
            return ResponseEntity.ok(ScheduleofTimeDTO);
        } catch (Exception e) {
-           return ResponseEntity.status(500).body(e.getMessage());
+           Map<String, String> errorResponse = new HashMap<>();
+           errorResponse.put("message", e.getMessage());
+           return ResponseEntity.status(500).body(errorResponse);
        }
    }
 
@@ -40,6 +44,8 @@ public class TimeScheduleControler {
            List<ScheduleofTimeDTO> getallSchedule = timeScheduleServices.GetTimeSchedule(studentEmail.get(0));
            return ResponseEntity.ok(getallSchedule);
        }catch (Exception e) {
+           Map<String, String> errorResponse = new HashMap<>();
+           errorResponse.put("message", e.getMessage());
            return ResponseEntity.status(500).body(e.getMessage());
        }
    }
@@ -52,6 +58,8 @@ public class TimeScheduleControler {
            ScheduleofTimeDTO updateSchedule = timeScheduleServices.updateTimeSchedule(schedule,studentEmail.get(0));
            return ResponseEntity.ok(updateSchedule);
        } catch (Exception e) {
+           Map<String, String> errorResponse = new HashMap<>();
+           errorResponse.put("message", e.getMessage());
            return ResponseEntity.status(500).body(e.getMessage());
        }
    }
@@ -64,6 +72,8 @@ public class TimeScheduleControler {
            ScheduleofTimeDTO detete_Details = timeScheduleServices.deleteTimeSchedule(studentEmail.get(0), scheduleId);
            return ResponseEntity.ok(detete_Details);
        } catch (Exception e) {
+           Map<String, String> errorResponse = new HashMap<>();
+           errorResponse.put("message", e.getMessage());
            return ResponseEntity.status(500).body(e.getMessage());
        }
    }

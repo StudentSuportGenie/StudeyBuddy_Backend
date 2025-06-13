@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ScheduleofTimeDTO {
 
-    private Integer scheduleId;
+    private int scheduleId;
     private Date scheduleDate;
     private Time scheduleStartTime;
     private int hourCount;

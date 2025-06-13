@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/API/V1/")
@@ -31,6 +33,8 @@ public class KnowledgeItemController {
             }
             return ResponseEntity.status(403).body("Unauthorized");
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -41,6 +45,8 @@ public class KnowledgeItemController {
             List<KnowledgeableDTO> semimetallic = knowdgleItemServices.getAllKnowdgleItems();
             return ResponseEntity.ok(semimetallic);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -56,6 +62,8 @@ public class KnowledgeItemController {
             }
             return ResponseEntity.status(403).body("Unauthorized");
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
@@ -71,6 +79,8 @@ public class KnowledgeItemController {
             }
             return ResponseEntity.status(403).body("Unauthorized");
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
