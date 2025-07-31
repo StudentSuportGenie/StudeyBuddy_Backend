@@ -1,7 +1,6 @@
 package com.example.studyBuddy.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,13 @@ public class knowdgleItems {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int knowdgleItemId;
     private String knowdgleItemTitle;
     private String knowdgleItemDescription;
     private String knowdgleitemLink;
+
+    @Enumerated(EnumType.STRING)
     private ItemType knowdgleItemtype;
-    private String AddedEmail;
+    private String addedEmail;
 }

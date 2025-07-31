@@ -21,12 +21,22 @@ public class KnowdgleItemServices {
     private knowdgleItemRepo knowdgleItemRepo;
 
     public KnowledgeableDTO addKnowdgleItem(KnowledgeableDTO knowdgleItemDTO) {
-        knowdgleItems findknowgdleItem =  knowdgleItemRepo.findByKnowdgleItemTitle(knowdgleItemDTO.getKnowdgleItemTitle()).orElse(null);
-        if (Objects.equals(findknowgdleItem.getKnowdgleItemTitle(), knowdgleItemDTO.getKnowdgleItemTitle()) && Objects.equals(knowdgleItemDTO.getKnowdgleItemtype(),findknowgdleItem.getKnowdgleItemtype()) ){
+        knowdgleItems existingItem = knowdgleItemRepo.findByKnowdgleItemTitle(knowdgleItemDTO.getKnowdgleItemTitle()).orElse(null);
+
+        if (existingItem != null &&
+                Objects.equals(existingItem.getKnowdgleItemTitle(), knowdgleItemDTO.getKnowdgleItemTitle()) &&
+                Objects.equals(existingItem.getKnowdgleItemtype(), knowdgleItemDTO.getKnowdgleItemtype())) {
             throw new IllegalStateException("Knowdgle item already exists");
         }
-        knowdgleItemRepo.save(findknowgdleItem);
-        return modelMapper.map(knowdgleItemDTO, KnowledgeableDTO.class);
+
+        // Map DTO to Entity
+        knowdgleItems newItem = modelMapper.map(knowdgleItemDTO, knowdgleItems.class);
+
+        // Save new item
+        knowdgleItemRepo.save(newItem);
+
+        // Return the saved DTO
+        return modelMapper.map(newItem, KnowledgeableDTO.class);
     }
 
     public List<KnowledgeableDTO> getAllKnowdgleItems() {

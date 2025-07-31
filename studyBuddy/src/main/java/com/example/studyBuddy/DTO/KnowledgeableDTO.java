@@ -14,5 +14,5 @@ public class KnowledgeableDTO {
     private String knowdgleItemDescription;
     private String knowdgleitemLink;
     private String knowdgleItemtype;
-    private String AddedEmail;
+    private String addedEmail;
 }

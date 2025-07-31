@@ -112,6 +112,29 @@ public class DateReminderService {
     public List<DateReminderDTO> getAllDateReminders() {
         List<DateReminder> dateReminders = dataReminderRepo.findAll();
         List<DateReminderDTO> dateReminderDTOs = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+
+        for (DateReminder reminder : dateReminders) {
+            Date reminderDate = reminder.getReminderDate();
+
+            if (reminderDate != null) {
+                // Convert Date to LocalDate for proper comparison
+                LocalDate reminderLocalDate = reminderDate.toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                if (reminderLocalDate.isBefore(today)) {
+                    // Delete safely
+                    dataReminderRepo.deleteById(reminder.getDateReminderId());
+                } else {
+                    // Add today's or future reminder to list
+                    DateReminderDTO dto = modelMapper.map(reminder, DateReminderDTO.class);
+                    dateReminderDTOs.add(dto);
+                }
+            }
+        }
+
         return dateReminderDTOs;
     }
+
+
 }
