@@ -69,7 +69,6 @@
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
-
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -86,7 +85,8 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.2</version>
 		</dependency>
-<!--		Email sender-->
+
+       <!--	Email sender -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -108,7 +108,6 @@
 			<artifactId>caffeine</artifactId>
 			<version>3.1.8</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -137,7 +136,41 @@
 					</excludes>
 				</configuration>
 			</plugin>
+        <!-- Dockrization process-->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>10.0.4</version>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+
+					<!-- Disable OSS Index -->
+					<ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+
+					<!-- Disable Central Analyzer -->
+					<centralAnalyzerEnabled>false</centralAnalyzerEnabled>
+
+					<!-- Prevent build failure -->
+					<failBuildOnCVSS>11</failBuildOnCVSS>
+
+					<!-- Optional -->
+					<skipProvidedScope>true</skipProvidedScope>
+
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

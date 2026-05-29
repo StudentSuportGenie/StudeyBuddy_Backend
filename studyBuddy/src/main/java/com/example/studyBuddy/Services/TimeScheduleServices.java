@@ -106,8 +106,11 @@ public class TimeScheduleServices {
 
 
     public List<ScheduleofTimeDTO> GetTimeSchedule(String email) {
-        StudentDetails student = studentDetailsRepo.findByStudentEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Student details not found"));
+        StudentDetails student = studentDetailsRepo.findByStudentEmail(email).orElse(null);
+
+        if (student == null) {
+            return new java.util.ArrayList<>();
+        }
 
         // Directly fetch schedules related to this student
         List<ScheduleOfTime> schedules = studentTimescheduleRepo.findByStudentDetails(student);
